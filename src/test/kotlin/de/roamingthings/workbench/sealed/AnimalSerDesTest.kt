@@ -17,7 +17,23 @@ const val dogJson = """
         }
         """
 
-class UnknownAnimalTest {
+const val catJson = """
+        {
+            "@type": "CAT",
+            "color": "Black",
+            "purringVolume": 42
+        }
+        """
+
+const val fishJson = """
+        {
+            "@type": "FISH",
+            "finCount": 12,
+            "size": 71.5
+        }
+        """
+
+class AnimalSerDesTest {
     lateinit var objectMapper: ObjectMapper
 
     @BeforeEach
@@ -35,10 +51,42 @@ class UnknownAnimalTest {
     }
 
     @Test
-    fun `should deserialize JSON into POKO`() {
+    fun `should deserialize Dog JSON into POKO`() {
         val animal = objectMapper.readValue<Animal>(dogJson)
 
         assertThat(animal).isEqualTo(aDog())
+    }
+
+    @Test
+    fun `should serialize Cat into JSON`() {
+        val animal = aCat()
+
+        val json = objectMapper.writeValueAsString(animal)
+
+        assertThatJson(json).isEqualTo(catJson)
+    }
+
+    @Test
+    fun `should deserialize Cat JSON into POKO`() {
+        val animal = objectMapper.readValue<Animal>(catJson)
+
+        assertThat(animal).isEqualTo(aCat())
+    }
+
+    @Test
+    fun `should serialize Fish into JSON`() {
+        val animal = aFish()
+
+        val json = objectMapper.writeValueAsString(animal)
+
+        assertThatJson(json).isEqualTo(fishJson)
+    }
+
+    @Test
+    fun `should deserialize Fish JSON into POKO`() {
+        val animal = objectMapper.readValue<Animal>(fishJson)
+
+        assertThat(animal).isEqualTo(aFish())
     }
 
     @Test
@@ -60,4 +108,14 @@ class UnknownAnimalTest {
 fun aDog() = Dog(
     color = "Black",
     barkingPitch = 23
+)
+
+fun aCat() = Cat(
+    color = "Black",
+    purringVolume = 42
+)
+
+fun aFish() = Fish(
+    size = 71.5,
+    finCount = 12
 )

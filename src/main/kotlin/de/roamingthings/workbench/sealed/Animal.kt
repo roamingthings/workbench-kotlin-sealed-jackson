@@ -16,5 +16,5 @@ data class Cat(
 
 data class Fish(
     val finCount: Int,
-    val size: Float
+    val size: Double
 ) : Animal()
