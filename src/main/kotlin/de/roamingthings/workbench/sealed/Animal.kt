@@ -2,8 +2,6 @@ package de.roamingthings.workbench.sealed
 
 sealed class Animal
 
-object UnknownAnimal : Animal()
-
 data class Dog(
     val color: String,
     val barkingPitch: Int
