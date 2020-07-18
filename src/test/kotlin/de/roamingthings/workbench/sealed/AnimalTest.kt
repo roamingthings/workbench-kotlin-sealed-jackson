@@ -21,7 +21,27 @@ const val dogJson = """
         }
         """
 
-class AnimalTest {
+const val catJson = """
+        {
+            "@type": "CAT",
+            "details": {
+                "color": "Black",
+                "purringVolume": 42
+            }
+        }
+        """
+
+const val fishJson = """
+        {
+            "@type": "FISH",
+            "details": {
+                "finCount": 12,
+                "size": 71.5
+            }
+        }
+        """
+
+class AnimalSerDesTest {
     lateinit var objectMapper: ObjectMapper
 
     @BeforeEach
@@ -31,7 +51,7 @@ class AnimalTest {
 
     @Test
     fun `should serialize Dog into JSON`() {
-        val animal: Animal = aDog()
+        val animal = aDog()
 
         val json = objectMapper.writeValueAsString(animal)
 
@@ -39,10 +59,42 @@ class AnimalTest {
     }
 
     @Test
-    fun `should deserialize into Kotlin`() {
+    fun `should deserialize Dog JSON into POKO`() {
         val animal = objectMapper.readValue<Animal>(dogJson)
 
         assertThat(animal).isEqualTo(aDog())
+    }
+
+    @Test
+    fun `should serialize Cat into JSON`() {
+        val animal = aCat()
+
+        val json = objectMapper.writeValueAsString(animal)
+
+        assertThatJson(json).isEqualTo(catJson)
+    }
+
+    @Test
+    fun `should deserialize Cat JSON into POKO`() {
+        val animal = objectMapper.readValue<Animal>(catJson)
+
+        assertThat(animal).isEqualTo(aCat())
+    }
+
+    @Test
+    fun `should serialize Fish into JSON`() {
+        val animal = aFish()
+
+        val json = objectMapper.writeValueAsString(animal)
+
+        assertThatJson(json).isEqualTo(fishJson)
+    }
+
+    @Test
+    fun `should deserialize Fish JSON into POKO`() {
+        val animal = objectMapper.readValue<Animal>(fishJson)
+
+        assertThat(animal).isEqualTo(aFish())
     }
 
     @Test
@@ -91,4 +143,14 @@ class AnimalTest {
 fun aDog() = Dog(
     color = "Black",
     barkingPitch = 23
+)
+
+fun aCat() = Cat(
+    color = "Black",
+    purringVolume = 42
+)
+
+fun aFish() = Fish(
+    size = 71.5,
+    finCount = 12
 )
