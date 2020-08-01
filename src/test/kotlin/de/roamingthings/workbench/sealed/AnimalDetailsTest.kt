@@ -1,48 +1,64 @@
 package de.roamingthings.workbench.sealed
 
+import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import de.roamingthings.workbench.sealed.model.Animal
-import de.roamingthings.workbench.sealed.model.Cat
-import de.roamingthings.workbench.sealed.model.Dog
-import de.roamingthings.workbench.sealed.model.Fish
+import de.roamingthings.workbench.sealed.serdes.DETAILS_FIELD_NAME
+import de.roamingthings.workbench.sealed.serdes.SealedClassSerDesModule
 import net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
 
-const val dogJson = """
+const val dogWithDetailsJson = """
         {
             "@type": "DOG",
-            "color": "Black",
-            "barkingPitch": 23
+            "details": {
+                "color": "Black",
+                "barkingPitch": 23
+            }
         }
         """
 
-const val catJson = """
+const val catWithDetailsJson = """
         {
             "@type": "CAT",
-            "color": "Black",
-            "purringVolume": 42
+            "details": {
+                "color": "Black",
+                "purringVolume": 42
+            }
         }
         """
 
-const val fishJson = """
+const val fishWithDetailsJson = """
         {
             "@type": "FISH",
-            "finCount": 12,
-            "size": 71.5
+            "details": {
+                "finCount": 12,
+                "size": 71.5
+            }
         }
         """
 
-@SpringBootTest
-class AnimalSerDesTest {
-    @Autowired
+class AnimalDetailsSerDesTest {
     lateinit var objectMapper: ObjectMapper
+
+    @BeforeEach
+    fun setup() {
+        objectMapper = ObjectMapper()
+        objectMapper.registerModule(KotlinModule())
+        objectMapper.registerModule(JavaTimeModule())
+        objectMapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+        objectMapper.configure(WRITE_DATES_AS_TIMESTAMPS, false)
+        objectMapper.registerModule(SealedClassSerDesModule(detailsFieldName = DETAILS_FIELD_NAME))
+    }
 
     @Test
     fun `should serialize Dog into JSON`() {
@@ -50,12 +66,12 @@ class AnimalSerDesTest {
 
         val json = objectMapper.writeValueAsString(animal)
 
-        assertThatJson(json).isEqualTo(dogJson)
+        assertThatJson(json).isEqualTo(dogWithDetailsJson)
     }
 
     @Test
     fun `should deserialize Dog JSON into POKO`() {
-        val animal = objectMapper.readValue<Animal>(dogJson)
+        val animal = objectMapper.readValue<Animal>(dogWithDetailsJson)
 
         assertThat(animal).isEqualTo(aDog())
     }
@@ -66,12 +82,12 @@ class AnimalSerDesTest {
 
         val json = objectMapper.writeValueAsString(animal)
 
-        assertThatJson(json).isEqualTo(catJson)
+        assertThatJson(json).isEqualTo(catWithDetailsJson)
     }
 
     @Test
     fun `should deserialize Cat JSON into POKO`() {
-        val animal = objectMapper.readValue<Animal>(catJson)
+        val animal = objectMapper.readValue<Animal>(catWithDetailsJson)
 
         assertThat(animal).isEqualTo(aCat())
     }
@@ -82,12 +98,12 @@ class AnimalSerDesTest {
 
         val json = objectMapper.writeValueAsString(animal)
 
-        assertThatJson(json).isEqualTo(fishJson)
+        assertThatJson(json).isEqualTo(fishWithDetailsJson)
     }
 
     @Test
     fun `should deserialize Fish JSON into POKO`() {
-        val animal = objectMapper.readValue<Animal>(fishJson)
+        val animal = objectMapper.readValue<Animal>(fishWithDetailsJson)
 
         assertThat(animal).isEqualTo(aFish())
     }
@@ -117,7 +133,7 @@ class AnimalSerDesTest {
 
         Assertions.assertThatThrownBy { objectMapper.readValue<Animal>(jsonOfUnknownType) }
             .isInstanceOf(JsonMappingException::class.java)
-            .hasMessageContaining("missing (therefore NULL) value for creator parameter color which is a non-nullable type")
+            .hasMessageStartingWith("Missing details")
     }
 
     @Test
@@ -134,18 +150,3 @@ class AnimalSerDesTest {
             .hasMessageStartingWith("Missing @type")
     }
 }
-
-fun aDog() = Dog(
-    color = "Black",
-    barkingPitch = 23
-)
-
-fun aCat() = Cat(
-    color = "Black",
-    purringVolume = 42
-)
-
-fun aFish() = Fish(
-    size = 71.5,
-    finCount = 12
-)

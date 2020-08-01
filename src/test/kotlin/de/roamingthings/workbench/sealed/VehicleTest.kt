@@ -14,10 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest
 const val carJson = """
         {
             "@type": "CAR",
-            "details": {
-                "color": "Black",
-                "maxSpeedKph": 180
-            }
+            "color": "Black",
+            "maxSpeedKph": 180
         }
         """
 
@@ -57,7 +55,7 @@ class VehicleTest {
     }
 
     @Test
-    fun `should throw exception on bissing detailsin JSON`() {
+    fun `should throw exception on missing properties JSON`() {
         val jsonOfUnknownType =
             """
           {
@@ -67,7 +65,7 @@ class VehicleTest {
 
         Assertions.assertThatThrownBy { objectMapper.readValue<Vehicle>(jsonOfUnknownType) }
             .isInstanceOf(JsonMappingException::class.java)
-            .hasMessageStartingWith("Missing details")
+            .hasMessageContaining("missing (therefore NULL) value for creator parameter color which is a non-nullable type")
     }
 
     @Test

@@ -12,7 +12,7 @@ import com.fasterxml.jackson.module.kotlin.isKotlinClass
 
 class SealedClassBeanDeserializerModifier(
     private val typeFiledName: String,
-    private val detailsFieldName: String
+    private val detailsFieldName: String? = null
 ) : BeanDeserializerModifier() {
     override fun modifyDeserializer(config: DeserializationConfig?, beanDesc: BeanDescription?, deserializer: JsonDeserializer<*>?): JsonDeserializer<*> {
         return when (beanDesc?.isSealedClass()) {
@@ -28,7 +28,7 @@ class SealedClassBeanDeserializerModifier(
 
 class SealedClassDeserializer<T : Any>(
     private val typeFiledName: String,
-    private val detailsFieldName: String,
+    private val detailsFieldName: String?,
     private val sealedClass: Class<T>
 ) : JsonDeserializer<T>() {
     override fun deserialize(parser: JsonParser, context: DeserializationContext): T? {
@@ -39,7 +39,10 @@ class SealedClassDeserializer<T : Any>(
             subclass == null -> {
                 throw JsonMappingException(parser, mappingExceptionMessageFor(subclassTypeName))
             }
-            node.has(detailsFieldName) -> {
+            (detailsFieldName.isNullOrBlank()) -> {
+                parser.codec.treeToValue(node, subclass)
+            }
+            (node.has(detailsFieldName)) -> {
                 val detailNode = node.get(detailsFieldName)
                 parser.codec.treeToValue(detailNode, subclass)
             }

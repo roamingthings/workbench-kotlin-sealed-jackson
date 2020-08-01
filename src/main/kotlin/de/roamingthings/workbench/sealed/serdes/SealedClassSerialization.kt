@@ -7,10 +7,11 @@ import com.fasterxml.jackson.databind.SerializationConfig
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
+import com.fasterxml.jackson.databind.util.NameTransformer.NOP
 
 class SealedClassBeanSerializerModifier(
     private val typeFiledName: String,
-    private val detailsFieldName: String
+    private val detailsFieldName: String? = null
 ) : BeanSerializerModifier() {
     override fun modifySerializer(
         config: SerializationConfig, beanDesc: BeanDescription, defaultSerializer: JsonSerializer<*>): JsonSerializer<*> {
@@ -33,15 +34,21 @@ class SealedClassBeanSerializerModifier(
 class SealedClassSerializer<T : Any>(
     private val defaultSerializer: JsonSerializer<Any>,
     private val typeFiledName: String,
-    private val detailsFieldName: String,
+    private val detailsFieldName: String?,
     sealedClass: Class<T>
 ) : StdSerializer<T>(sealedClass) {
+
+    private val unwrappingDefaultSerializer: JsonSerializer<Any> = defaultSerializer.unwrappingSerializer(NOP)
 
     override fun serialize(value: T, jgen: JsonGenerator, provider: SerializerProvider) {
         jgen.writeStartObject();
         jgen.writeStringField(typeFiledName, value::class.java.simpleName.camelToSnakeCase())
-        jgen.writeFieldName(detailsFieldName)
-        defaultSerializer.serialize(value, jgen, provider)
+        if (detailsFieldName.isNullOrBlank()) {
+            unwrappingDefaultSerializer.serialize(value, jgen, provider)
+        } else {
+            jgen.writeFieldName(detailsFieldName)
+            defaultSerializer.serialize(value, jgen, provider)
+        }
         jgen.writeEndObject()
     }
 }
