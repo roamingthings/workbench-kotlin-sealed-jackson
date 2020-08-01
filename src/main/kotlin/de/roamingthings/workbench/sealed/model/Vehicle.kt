@@ -1,4 +1,4 @@
-package de.roamingthings.workbench.sealed
+package de.roamingthings.workbench.sealed.model
 
 sealed class Vehicle
 

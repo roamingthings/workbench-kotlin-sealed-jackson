@@ -3,12 +3,16 @@ package de.roamingthings.workbench.sealed
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import de.roamingthings.workbench.sealed.serdes.createObjectMapper
+import de.roamingthings.workbench.sealed.model.Animal
+import de.roamingthings.workbench.sealed.model.Cat
+import de.roamingthings.workbench.sealed.model.Dog
+import de.roamingthings.workbench.sealed.model.Fish
 import net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 
 
 const val dogJson = """
@@ -41,13 +45,10 @@ const val fishJson = """
         }
         """
 
+@SpringBootTest
 class AnimalSerDesTest {
+    @Autowired
     lateinit var objectMapper: ObjectMapper
-
-    @BeforeEach
-    fun setup() {
-        objectMapper = createObjectMapper()
-    }
 
     @Test
     fun `should serialize Dog into JSON`() {

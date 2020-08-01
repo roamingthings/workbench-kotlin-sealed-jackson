@@ -3,11 +3,13 @@ package de.roamingthings.workbench.sealed
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import de.roamingthings.workbench.sealed.serdes.createObjectMapper
+import de.roamingthings.workbench.sealed.model.Car
+import de.roamingthings.workbench.sealed.model.Vehicle
 import net.javacrumbs.jsonunit.assertj.JsonAssertions
 import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
 
 const val carJson = """
         {
@@ -19,13 +21,10 @@ const val carJson = """
         }
         """
 
+@SpringBootTest
 class VehicleTest {
+    @Autowired
     lateinit var objectMapper: ObjectMapper
-
-    @BeforeEach
-    fun setup() {
-        objectMapper = createObjectMapper()
-    }
 
     @Test
     fun `should serialize Car into JSON`() {
