@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 )
 sealed class Animal
 
-@Schema(discriminatorProperty = "@type")
 data class Dog(
     val color: String,
     val barkingPitch: Int
