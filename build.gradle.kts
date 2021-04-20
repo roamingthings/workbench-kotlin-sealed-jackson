@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm") version "1.4.32"
     kotlin("plugin.spring") version "1.4.32"
     id("com.github.johnrengelman.processes") version "0.5.0"
-    id("org.springdoc.openapi-gradle-plugin") version "1.3.0"
+    id("org.springdoc.openapi-gradle-plugin") version "1.3.1"
 }
 
 group = "de.roamingthings"
@@ -36,7 +36,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.18.0")
+    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.25.0")
 }
 
 tasks.withType<KotlinCompile>().configureEach {
