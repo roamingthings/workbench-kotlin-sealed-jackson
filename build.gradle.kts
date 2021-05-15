@@ -28,8 +28,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
-    implementation("org.springdoc:springdoc-openapi-ui:1.5.7")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.7")
+    implementation("org.springdoc:springdoc-openapi-ui:1.5.8")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.8")
 
     testImplementation(kotlin("test"))
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
