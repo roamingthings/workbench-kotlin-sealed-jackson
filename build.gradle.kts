@@ -32,7 +32,6 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-kotlin:1.5.7")
 
     testImplementation(kotlin("test"))
-    testImplementation(kotlin("test-junit"))
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
