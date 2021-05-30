@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm") version "1.5.0"
     kotlin("plugin.spring") version "1.5.0"
     id("com.github.johnrengelman.processes") version "0.5.0"
-    id("org.springdoc.openapi-gradle-plugin") version "1.3.1"
+    id("org.springdoc.openapi-gradle-plugin") version "1.3.2"
 }
 
 group = "de.roamingthings"
@@ -29,7 +29,7 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     implementation("org.springdoc:springdoc-openapi-ui:1.5.9")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.8")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.9")
 
     testImplementation(kotlin("test"))
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
