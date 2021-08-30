@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm") version "1.5.20"
     kotlin("plugin.spring") version "1.5.20"
     id("com.github.johnrengelman.processes") version "0.5.0"
-    id("org.springdoc.openapi-gradle-plugin") version "1.3.2"
+    id("org.springdoc.openapi-gradle-plugin") version "1.3.3"
 }
 
 group = "de.roamingthings"
