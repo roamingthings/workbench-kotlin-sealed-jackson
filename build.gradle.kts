@@ -35,7 +35,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.27.0")
+    testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.29.0")
 }
 
 tasks.withType<KotlinCompile>().configureEach {
